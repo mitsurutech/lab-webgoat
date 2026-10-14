@@ -1,0 +1,86 @@
+# Web application security with WebGoat: lessons that explain a weakness and then ask you to
+# use it, and WebWolf beside it for the lessons that need a second party.
+#
+# Your copy is the only thing you may attack, and it is the only thing you can reach: this
+# lab has no way out to the internet. Never point a tool at a site you do not own, in a lab
+# or anywhere else.
+#
+# Press Open on the lab's page. The first link is WebGoat: choose Register, make up a
+# username and password for this copy, and start at the top of the lesson list. The second
+# link is WebWolf, for the lessons that say to use it; sign in there with the same account.
+# Your lessons are kept only while the lab runs.
+#
+# Hand in a screenshot of each lesson completed, with a paragraph in your own words on why
+# the weakness exists and how a developer prevents it.
+#
+# WebGoat is given a gigabyte, the most of any lab here: it is a Java application.
+
+services:
+  webgoat:
+    image: webgoat/webgoat:v2026.5
+    user: "1001:1001"
+    environment:
+      # Redirects follow the address the browser used, on the platform's HTTPS address.
+      SERVER_FORWARD_HEADERS_STRATEGY: native
+      SERVER_TOMCAT_REMOTEIP_INTERNAL_PROXIES: ".*"
+    expose: ["8080", "9090"]
+    # The image's own check calls curl, which the image does not contain, so it can never pass
+    # and a copy would be called unhealthy while WebGoat was answering. This asks WebGoat's own
+    # health address with bash, which the image does have.
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /WebGoat/actuator/health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
+      interval: 3s
+      timeout: 5s
+      retries: 60
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+
+  web:
+    image: nginx:1.27-alpine
+    entrypoint:
+      - sh
+      - -c
+      - |
+        cat > /etc/nginx/conf.d/default.conf <<'CONF'
+        server {
+          listen 80;
+          absolute_redirect off;
+          location = / { return 302 /WebGoat/; }
+          location / {
+            proxy_pass http://webgoat:8080;
+            proxy_set_header Host $$http_host;
+            proxy_set_header X-Forwarded-Proto $$http_x_forwarded_proto;
+            proxy_set_header X-Forwarded-For $$remote_addr;
+          }
+        }
+        server {
+          listen 9090;
+          absolute_redirect off;
+          location = / { return 302 /WebWolf/; }
+          location / {
+            proxy_pass http://webgoat:9090;
+            proxy_set_header Host $$http_host;
+            proxy_set_header X-Forwarded-Proto $$http_x_forwarded_proto;
+            proxy_set_header X-Forwarded-For $$remote_addr;
+          }
+        }
+        CONF
+        exec nginx -g "daemon off;"
+    expose: ["80", "9090"]
+    depends_on:
+      - webgoat
+    # Healthy means WebGoat is answering through the proxy, so the first press of Open works.
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/WebGoat/login"]
+      interval: 3s
+      timeout: 3s
+      retries: 60
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    labels:
+      lab.title: WebGoat, and WebWolf on the second link
+      lab.open: "80,9090"
