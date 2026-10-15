@@ -46,31 +46,36 @@ You need Docker with the Compose plugin. The first start downloads the images.
 docker compose -f compose.yaml -f local.yaml up
 ```
 
-{c["local_open"]}
+Open <http://localhost:8080/WebGoat> for WebGoat and <http://localhost:9090/WebWolf> for WebWolf.
 
 `local.yaml` publishes the ports on `127.0.0.1` only, so the lab is reachable from your own computer and from nowhere else. Stop it with `Ctrl-C`, and remove it with `docker compose -f compose.yaml -f local.yaml down -v`. Run it on a machine you are happy to attack from: the application is insecure on purpose.
 
 ## Working through it
 
-{c["working"]}
+1. **Register.** Open WebGoat, choose **Register** and make up a username and password for this copy.
+2. **Start at the top of the lesson list.** Each lesson explains a weakness, such as injection, broken access control, insecure deserialisation, JWT mistakes or path traversal, and then asks you to use it. The lesson is marked complete when you do.
+3. **Use WebWolf when a lesson says so.** The lab has two links, WebGoat and WebWolf, and WebWolf is for the lessons that need a second party, such as one that sends you a message. Sign in there with the same account.
+4. **Your progress lasts while the lab runs.** It is not kept when the lab stops.
 
 ## For teachers
 
 Nothing in this lab is marked automatically. The student hands in evidence and you mark it, the way you mark any other lab.
 
-**Ask for evidence in two halves.** First, proof of the work: {c["proof"]}, with the lab's own address visible in the browser so it is clearly their copy. Second, the understanding: for each one, a written explanation in their own words of what the weakness is, the exact input they used and why it worked, what an attacker could do with it, and how the code should have been written. The second half tells you whether it was understood or copied from a walkthrough. For stronger work ask for the fix as well as the attack.
+**Ask for evidence in two halves.** First, proof of the work: a screenshot of each lesson marked complete, with the lab's own address visible in the browser so it is clearly their copy. Second, the understanding: for each one, a written explanation in their own words of what the weakness is, the exact input they used and why it worked, what an attacker could do with it, and how the code should have been written. The second half tells you whether it was understood or copied from a walkthrough. For stronger work ask for the fix as well as the attack.
 
-**Where it sits in a course.** {c["course"]} Check your own awarding body's unit for the exact wording; none is quoted here.
+**Where it sits in a course.** WebGoat suits a first introduction to each class of weakness with the explanation beside it, and cryptography, token and deserialisation basics. It also supports the legal and ethical side of a unit: authorisation and scope, the Computer Misuse Act 1990 and responsible disclosure. Check your own awarding body's unit for the exact wording; none is quoted here.
 
 **Who sees what.** These labs are often used with students aged 16 and 17. A copy is private to the student who started it. A member of staff who teaches the module can open it to see what the student has done, and opening a student's work is written to the access log, which the student can read.
 
 ## What does not work in a lab
 
-{c["limits"]}
+WebGoat's progress lasts only while the lab runs. The lab has no way out to the internet, so a lesson that needs a site on the internet cannot be completed. WebGoat is a Java application and is given 1 GB, the most of the three security labs, and it takes a few seconds longer to start than the others.
 
 ## Troubleshooting
 
-{c["trouble"]}
+- **The login page does not appear straight after Start.** Wait a few seconds and press Open again: the lab reports itself ready only once WebGoat answers through its proxy.
+- **The second link, WebWolf, does not sign you in.** Register in WebGoat first, then sign in to WebWolf with the same account.
+- **On your own machine, port 8080 or 9090 is already in use.** Change the left-hand numbers in `local.yaml` and open those ports instead.
 
 ## Checking the lab
 
@@ -82,7 +87,7 @@ test/check.sh
 
 ## Versions and licences
 
-{c["licences"]}
+[WebGoat](https://github.com/WebGoat/WebGoat) is GPL-2.0 licensed and [nginx](https://nginx.org) is BSD-2-Clause. The images are `webgoat/webgoat:v2026.5` and `nginx:1.27-alpine`.
 
 The compose file, the tests and this documentation are MIT licensed, see [LICENSE](LICENSE): copy it, change it, teach with it. The application inside is the licence of its own project, linked above.
 
