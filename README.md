@@ -1,5 +1,7 @@
 # OWASP WebGoat lab with Docker Compose: guided web security lessons, with WebWolf, in a private copy
 
+[English](README.md) | [Français](README.fr.md) | [日本語](README.ja.md) | [Español](README.es.md)
+
 [![check](https://github.com/mitsurutech/lab-webgoat/actions/workflows/check.yml/badge.svg)](https://github.com/mitsurutech/lab-webgoat/actions/workflows/check.yml)
 
 A ready-made **web application security lab** for classrooms, from the [MitsuruTech Learning Platform](https://mitsurutech.co.uk/learning), where schools and colleges give every student their own databases, containers and terminal in the browser. Each student gets their own copy of **OWASP WebGoat**, a guided course of lessons that each explain a weakness (injection, broken access control, insecure deserialisation, JWT mistakes, path traversal and more) and then ask the student to use it, with **WebWolf** beside it for the lessons that need a second party. It suits a first introduction and work set for home, with nothing installed and no risk to anybody else's machine.
@@ -85,11 +87,13 @@ WebGoat's progress lasts only while the lab runs. The lab has no way out to the 
 test/check.sh
 ```
 
-## Versions and licences
+## Versions and third-party licences
 
 [WebGoat](https://github.com/WebGoat/WebGoat) is GPL-2.0 licensed and [nginx](https://nginx.org) is BSD-2-Clause. The images are `webgoat/webgoat:v2026.5` and `nginx:1.27-alpine`.
 
-The compose file, the tests and this documentation are MIT licensed, see [LICENSE](LICENSE): copy it, change it, teach with it. The application inside is the licence of its own project, linked above.
+## Licence
+
+This work is licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). You may share it and adapt it for learning and teaching, if you credit Mitsuru Technologies Ltd, do not use it commercially, and share anything you make from it under the same licence. The full text is in the `LICENSE` file. It covers the compose file, the tests and this documentation. The application inside keeps the licence of its own project, linked above.
 
 ## About
 
